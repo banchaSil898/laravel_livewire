@@ -1,0 +1,31 @@
+FROM php:8.2-fpm
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+  libpng-dev \
+  libjpeg-dev \
+  libfreetype6-dev \
+  zip \
+  unzip \
+  git \
+  curl \
+  gnupg \
+  && docker-php-ext-configure gd --with-freetype --with-jpeg \
+  && docker-php-ext-install pdo pdo_mysql gd exif
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# ติดตั้ง Xdebug
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# ตั้งค่า Xdebug
+COPY ./docker/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+
+# ทำความสะอาด
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /var/www/html
+
+CMD ["php-fpm"]
