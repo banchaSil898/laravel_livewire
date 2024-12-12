@@ -171,4 +171,8 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
+.phpactor.json
+.fleet
+.idea
+.vscode
 # End of https://www.toptal.com/developers/gitignore/api/laravel,node,composer
